@@ -6,7 +6,7 @@
 /*   By: ael-mhar <ael-mhar@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 09:32:29 by ael-mhar          #+#    #+#             */
-/*   Updated: 2023/01/17 18:26:14 by ael-mhar         ###   ########.fr       */
+/*   Updated: 2023/03/15 19:15:19 by ael-mhar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,25 @@
 
 void	launch(t_solve *solve)
 {
-	int	i;
-	int	status;
+	int		i;
+	int		status;
+	void	*ret;
+	int		*died_one;
 
 	i = -1;
 	while (++i < solve->number_of_philosophers)
 	{
-		status = pthread_join(solve->philosophers[i].thread_id, NULL);
+		status = pthread_join(solve->philosophers[i].thread_id, &ret);
 		if (status != 0)
-			perror("error\n");
+			perror("error ");
+	}
+	died_one = ((int *) ret);
+	if (solve->is_died && *died_one)
+	{
+		if (*died_one == -1)
+			*died_one = 0;
+		printf("%llu %d is died\n", solve->philosophers[*died_one].time_of_death,
+			*died_one);
 	}
 	i = -1;
 	while (++i < solve->number_of_philosophers)
@@ -31,13 +41,11 @@ void	launch(t_solve *solve)
 
 void	run_solve(t_solve *solve)
 {
-	int				j;
 	int				i;
 	int				status;
 	struct timeval	time;
 
 	i = -1;
-	j = 0;
 	gettimeofday(&time, NULL);
 	solve->timestamp = (time.tv_sec * 1000) + (time.tv_usec / 1000);
 	while (++i < solve->number_of_philosophers)
@@ -46,12 +54,13 @@ void	run_solve(t_solve *solve)
 		solve->philosophers[i].solve = solve;
 		solve->philosophers[i].meals_ates = 0;
 		solve->philosophers[i].is_ates = 0;
+		solve->philosophers[i].time_of_death = 0;
 		status = pthread_create(&solve->philosophers[i].thread_id,
 				NULL,
 				eat_dinner,
 				&solve->philosophers[i]);
 		if (status != 0)
-			perror("error\n");
+			perror("error ");
 	}
 	launch(solve);
 }

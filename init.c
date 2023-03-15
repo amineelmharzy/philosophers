@@ -6,7 +6,7 @@
 /*   By: ael-mhar <ael-mhar@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 09:20:51 by ael-mhar          #+#    #+#             */
-/*   Updated: 2023/01/17 18:28:47 by ael-mhar         ###   ########.fr       */
+/*   Updated: 2023/03/15 16:29:48 by ael-mhar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	init_mutex(t_solve *solve)
 
 	i = 0;
 	pthread_mutex_init(&solve->writing, NULL);
+	pthread_mutex_init(&solve->lock, NULL);
 	while (i < solve->number_of_philosophers)
 	{
 		pthread_mutex_init(&solve->chopsticks[i], NULL);
@@ -28,6 +29,11 @@ void	init_mutex(t_solve *solve)
 void	init_solve(t_solve *solve, int ac, char **av)
 {
 	solve->number_of_philosophers = atoi(av[1]);
+	if (solve->number_of_philosophers == 1)
+	{
+		printf("%llu %d is died\n", get_time(solve), 0);
+		exit(0);
+	}
 	solve->time_to_die = atoi(av[2]);
 	if (atoi(av[2]) <= 0)
 		exit(1);

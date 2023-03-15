@@ -6,7 +6,7 @@
 /*   By: ael-mhar <ael-mhar@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 17:52:30 by ael-mhar          #+#    #+#             */
-/*   Updated: 2023/01/17 18:51:04 by ael-mhar         ###   ########.fr       */
+/*   Updated: 2023/03/15 19:27:43 by ael-mhar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct s_philosopher
 
 typedef struct s_solve
 {
+	struct timeval		t;
 	int					number_of_philosophers;
 	int					time_to_eat;
 	int					time_to_sleep;
@@ -47,14 +48,12 @@ typedef struct s_solve
 	int					status;
 	int					current_philo;
 	unsigned long long	timestamp;
-	//pthread_mutex_t		writing;
-	//pthread_mutex_t		chopsticks[255];
 	char				*semaphore_for_fork;
-	char				*semaphore_for_main;
 	char				*semaphore_names[255];
 	char				*sem_forks[255];
 	sem_t				*fork;
-	sem_t				*main_sem;
+	sem_t				*main;
+	sem_t				*writing;
 	t_philosopher		philosophers[255];
 }					t_solve;
 

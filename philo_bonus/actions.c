@@ -6,7 +6,7 @@
 /*   By: ael-mhar <ael-mhar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 15:15:04 by ael-mhar          #+#    #+#             */
-/*   Updated: 2023/01/17 16:52:56 by ael-mhar         ###   ########.fr       */
+/*   Updated: 2023/03/15 19:31:18 by ael-mhar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	philo_sleep(t_solve *solve, int philo_id)
 
 void	eat(t_solve *solve, int philo_id)
 {
+	printf("%llu %d has taken a fork\n", get_time(solve), philo_id);
 	printf("%llu %d is eating\n", get_time(solve), philo_id);
 	usleep(solve->time_to_eat * 1000);
 	solve->philosophers[philo_id].is_ates = 1;
