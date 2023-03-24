@@ -6,7 +6,7 @@
 /*   By: ael-mhar <ael-mhar@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 09:20:51 by ael-mhar          #+#    #+#             */
-/*   Updated: 2023/03/15 21:53:24 by ael-mhar         ###   ########.fr       */
+/*   Updated: 2023/03/24 22:10:23 by ael-mhar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	init_solve(t_solve *solve, int ac, char **av)
 	if (solve->number_of_philosophers == 1)
 	{
 		printf("%llu %d is died\n", get_time(solve), 0);
-		return (0);
+		return (2);
 	}
 	solve->time_to_die = ft_atoi(av[2]);
 	solve->time_to_eat = ft_atoi(av[3]);

@@ -6,7 +6,7 @@
 /*   By: ael-mhar <ael-mhar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 09:35:33 by ael-mhar          #+#    #+#             */
-/*   Updated: 2023/03/24 16:59:09 by ael-mhar         ###   ########.fr       */
+/*   Updated: 2023/03/24 22:11:52 by ael-mhar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,14 @@
 int	main(int ac, char **av)
 {
 	t_solve	solve;
+	int		res;
 
 	if (ac != 5 && ac != 6)
 		return (0);
-	if (!init_solve(&solve, ac, av))
+	res = init_solve(&solve, ac, av);
+	if (!res)
+		return (write(2, "Error\n", 6), 1);
+	else if (res == 2)
 		return (0);
 	sem_unlink("main");
 	sem_unlink("writing");
