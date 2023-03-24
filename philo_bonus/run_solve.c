@@ -6,7 +6,7 @@
 /*   By: ael-mhar <ael-mhar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 09:32:29 by ael-mhar          #+#    #+#             */
-/*   Updated: 2023/03/23 13:32:27 by ael-mhar         ###   ########.fr       */
+/*   Updated: 2023/03/24 17:05:16 by ael-mhar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,9 @@ void	launch(t_philosopher philosopher)
 		sem_wait(solve->fork);
 		sem_wait(solve->fork);
 		eat(solve, philosopher.philosopher_id);
+		sem_wait(solve->writing);
 		solve->time = get_time(solve);
+		sem_post(solve->writing);
 		philosopher.meals_ates++;
 		sem_post(solve->fork);
 		sem_post(solve->fork);

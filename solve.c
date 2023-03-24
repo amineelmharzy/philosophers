@@ -6,7 +6,7 @@
 /*   By: ael-mhar <ael-mhar@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 09:31:53 by ael-mhar          #+#    #+#             */
-/*   Updated: 2023/03/24 15:18:52 by ael-mhar         ###   ########.fr       */
+/*   Updated: 2023/03/24 21:55:46 by ael-mhar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,11 @@
 
 void	check_all_ates(t_solve *solve)
 {
-	int	i;
-
-	pthread_mutex_lock(&solve->lock);
-	i = 0;
-	while (i < solve->number_of_philosophers)
+	if (solve->nphilos_ates == solve->number_of_philosophers)
 	{
-		if (solve->philosophers[i].is_ates == 0)
-		{
-			pthread_mutex_unlock(&solve->lock);
-			return ;
-		}
-		i++;
+		solve->time = get_time(solve);
+		solve->nphilos_ates = 0;
 	}
-	pthread_mutex_unlock(&solve->lock);
-	pthread_mutex_lock(&solve->lock);
-	i = 0;
-	while (i < solve->number_of_philosophers)
-	{
-		solve->philosophers[i].is_ates = 0;
-		i++;
-	}
-	solve->time = get_time(solve);
-	pthread_mutex_unlock(&solve->lock);
 }
 
 int	all_ates(t_solve *solve, t_philosopher *philo)
@@ -57,6 +39,7 @@ void	philosopher(t_solve *solve, t_philosopher *philo)
 	take_forks(solve, philo->philosopher_id);
 	eat(solve, philo->philosopher_id);
 	pthread_mutex_lock(&solve->writing);
+	solve->nphilos_ates++;
 	check_all_ates(solve);
 	pthread_mutex_unlock(&solve->writing);
 	puts_forks(solve, philo->philosopher_id);
@@ -76,7 +59,9 @@ void	*eat_dinner(void *arg)
 	{
 		if (all_ates(solve, philo))
 		{
+			pthread_mutex_lock(&solve->lock);
 			philo->is_done = 1;
+			pthread_mutex_unlock(&solve->lock);
 			return (NULL);
 		}
 		philosopher(solve, philo);

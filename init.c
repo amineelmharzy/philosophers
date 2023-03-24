@@ -6,7 +6,7 @@
 /*   By: ael-mhar <ael-mhar@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 09:20:51 by ael-mhar          #+#    #+#             */
-/*   Updated: 2023/03/24 15:28:45 by ael-mhar         ###   ########.fr       */
+/*   Updated: 2023/03/24 21:39:15 by ael-mhar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,14 @@ void	init_mutex(t_solve *solve)
 	int	i;
 
 	i = 0;
-	pthread_mutex_init(&solve->writing, NULL);
-	pthread_mutex_init(&solve->lock, NULL);
 	while (i < solve->number_of_philosophers)
 	{
 		pthread_mutex_init(&solve->chopsticks[i], NULL);
 		i++;
 	}
+	pthread_mutex_init(&solve->writing, NULL);
+	pthread_mutex_init(&solve->lock, NULL);
+	pthread_mutex_init(&solve->mut, NULL);
 }
 
 int	init_solve(t_solve *solve, int ac, char **av)
@@ -63,6 +64,7 @@ int	init_solve(t_solve *solve, int ac, char **av)
 	solve->time_to_eat = ft_atoi(av[3]);
 	solve->time_to_sleep = ft_atoi(av[4]);
 	solve->is_died = 0;
+	solve->nphilos_ates = 0;
 	if (ac == 6)
 	{
 		solve->number_of_times_each_philosopher_must_eat = ft_atoi(av[5]);

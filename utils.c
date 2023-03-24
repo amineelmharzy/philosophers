@@ -6,7 +6,7 @@
 /*   By: ael-mhar <ael-mhar@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 09:33:10 by ael-mhar          #+#    #+#             */
-/*   Updated: 2023/03/24 15:20:22 by ael-mhar         ###   ########.fr       */
+/*   Updated: 2023/03/24 21:55:55 by ael-mhar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ void	check_death(t_solve *solve)
 	while (1)
 	{
 		i = 0;
+		pthread_mutex_unlock(&solve->writing);
 		if (check_done(solve))
 			return ;
-		pthread_mutex_unlock(&solve->writing);
 		while (i < solve->number_of_philosophers)
 		{
 			if (get_time(solve) - solve->time > (unsigned long long)
@@ -47,6 +47,7 @@ void	check_death(t_solve *solve)
 			i++;
 		}
 		pthread_mutex_unlock(&solve->writing);
+		usleep(200);
 	}
 }
 

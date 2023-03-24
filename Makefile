@@ -1,22 +1,36 @@
-srcs = $(wildcard *.c)
+srcs = actions.c   \
+	init.c   \
+	run_solve.c   \
+	solve.c   \
+	utils.c
+
 objs = $(srcs:.c=.o)
 
-main_o = main.o
+philo_src = main.c
+philo_obj = main.o
+philo = philo
 
 CC=cc
-CFLAGS= -Wall -Wextra
+CFLAGS= -Wall -Wextra -Werror
+
 %.o : %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-all : main
+all : philo
 
-main : $(main_o) $(objs)
-	$(CC) $(objs) -o philo
+$(philo_obj) : $(philo_src)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+philo : $(objs) $(philo_obj)
+	$(CC) $(philo_obj) $(objs) -o $@
 
 clean :
 	rm $(objs)
 
 fclean : clean
-	rm philo
+	rm $(philo)
+
+bonus : 
+	make -C philo_bonus/
 
 re : fclean all
