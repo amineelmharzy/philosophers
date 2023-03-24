@@ -6,7 +6,7 @@
 /*   By: ael-mhar <ael-mhar@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 17:52:30 by ael-mhar          #+#    #+#             */
-/*   Updated: 2023/03/15 19:27:43 by ael-mhar         ###   ########.fr       */
+/*   Updated: 2023/03/23 13:32:09 by ael-mhar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ typedef struct s_solve
 	int					number_of_philosophers;
 	int					time_to_eat;
 	int					time_to_sleep;
-	unsigned long long	time_to_die;
+	int					time_to_die;
 	unsigned long long	last_ate;
 	int					number_of_times_each_philosopher_must_eat;
 	int					all_ates;
@@ -48,6 +48,7 @@ typedef struct s_solve
 	int					status;
 	int					current_philo;
 	unsigned long long	timestamp;
+	unsigned long long	time;
 	char				*semaphore_for_fork;
 	char				*semaphore_names[255];
 	char				*sem_forks[255];
@@ -57,7 +58,7 @@ typedef struct s_solve
 	t_philosopher		philosophers[255];
 }					t_solve;
 
-void				init_solve(t_solve *solve, int ac, char **av);
+int					init_solve(t_solve *solve, int ac, char **av);
 void				init_mutex(t_solve *solve);
 void				run_solve(t_solve *solve);
 void				*philosopher(void *arg);
@@ -69,5 +70,6 @@ void				take_forks(t_solve *solve, int philo_id);
 void				eat(t_solve *solve, int philo_id);
 void				puts_forks(t_solve *solve, int philo_id);
 void				*eat_dinner(void *arg);
+char				*ft_itoa(int n);
 
 #endif

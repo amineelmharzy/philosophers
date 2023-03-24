@@ -6,79 +6,66 @@
 /*   By: ael-mhar <ael-mhar@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 09:33:10 by ael-mhar          #+#    #+#             */
-/*   Updated: 2023/03/15 19:19:25 by ael-mhar         ###   ########.fr       */
+/*   Updated: 2023/03/24 15:20:22 by ael-mhar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	check_death(t_philosopher *philo)
+int	check_done(t_solve *solve)
 {
-	struct timeval		t;
-	unsigned long long	ms;
+	int	i;
 
-	pthread_mutex_lock(&philo->solve->lock);
-	gettimeofday(&t, NULL);
-	ms = (t.tv_sec * 1000) + (t.tv_usec / 1000);
-	pthread_mutex_unlock(&philo->solve->lock);
-	pthread_mutex_lock(&philo->solve->lock);
-	if ((ms - philo->solve->timestamp) > philo->solve->time_to_die)
+	i = 0;
+	while (i < solve->number_of_philosophers)
 	{
-		pthread_mutex_unlock(&philo->solve->lock);
-		pthread_mutex_lock(&philo->solve->lock);
-		philo->solve->is_died++;
-		pthread_mutex_unlock(&philo->solve->lock);
-		pthread_mutex_lock(&philo->solve->writing);
-		usleep(100);
-		return (1);
+		if (!solve->philosophers[i].is_done)
+			return (0);
+		i++;
 	}
-	pthread_mutex_unlock(&philo->solve->lock);
-	return (0);
+	return (1);
 }
 
-void	_take_forks(t_solve *solve, int philo_id, int left, int right)
+void	check_death(t_solve *solve)
 {
-	pthread_mutex_unlock(&solve->lock);
-	pthread_mutex_lock(&solve->chopsticks[left]);
-	pthread_mutex_lock(&solve->chopsticks[right]);
-	pthread_mutex_lock(&solve->lock);
-	if (!solve->is_died)
-		printf("%llu %d has taken a fork\n", get_time(solve), philo_id);
-	pthread_mutex_unlock(&solve->lock);
+	int	i;
+
+	while (1)
+	{
+		i = 0;
+		if (check_done(solve))
+			return ;
+		pthread_mutex_unlock(&solve->writing);
+		while (i < solve->number_of_philosophers)
+		{
+			if (get_time(solve) - solve->time > (unsigned long long)
+				solve->time_to_die)
+			{
+				printf("%lld %d died\n", get_time(solve) - solve->timestamp, i);
+				return ;
+			}
+			i++;
+		}
+		pthread_mutex_unlock(&solve->writing);
+	}
 }
 
 void	take_forks(t_solve *solve, int philo_id)
 {
-	int	right;
-	int	left;
-
-	pthread_mutex_lock(&solve->lock);
-	right = (philo_id + 1) % solve->number_of_philosophers;
-	left = (philo_id + solve->number_of_philosophers)
-		% solve->number_of_philosophers;
-	pthread_mutex_unlock(&solve->lock);
-	pthread_mutex_lock(&solve->lock);
-	if (philo_id & 1)
-	{
-		pthread_mutex_unlock(&solve->lock);
-		pthread_mutex_lock(&solve->chopsticks[right]);
-		pthread_mutex_lock(&solve->chopsticks[left]);
-		pthread_mutex_lock(&solve->lock);
-		if (!solve->is_died)
-			printf("%llu %d has taken a fork\n", get_time(solve), philo_id);
-		pthread_mutex_unlock(&solve->lock);
-	}
-	else
-		_take_forks(solve, philo_id, left, right);
+	pthread_mutex_lock(&solve->chopsticks[(philo_id + 1)
+		% solve->number_of_philosophers]);
+	pthread_mutex_lock(&solve->chopsticks[(philo_id
+			+ solve->number_of_philosophers)
+		% solve->number_of_philosophers]);
+	printf("%llu %d has taken a fork\n", get_time(solve) - solve->timestamp,
+		philo_id);
 }
 
 void	puts_forks(t_solve *solve, int philo_id)
 {
-	pthread_mutex_lock(&solve->lock);
 	pthread_mutex_unlock(&solve->chopsticks[(philo_id + 1)
 		% solve->number_of_philosophers]);
 	pthread_mutex_unlock(&solve->chopsticks[(philo_id
 			+ solve->number_of_philosophers)
 		% solve->number_of_philosophers]);
-	pthread_mutex_unlock(&solve->lock);
 }

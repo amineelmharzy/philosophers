@@ -4,7 +4,7 @@ objs = $(srcs:.c=.o)
 main_o = main.o
 
 CC=cc
-CFLAGS= -Wall -Wextra 
+CFLAGS= -Wall -Wextra -Werror
 %.o : %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
@@ -17,6 +17,6 @@ clean :
 	rm $(objs)
 
 fclean : clean
-	rm a.out
+	rm philo_bonus
 
 re : fclean all
