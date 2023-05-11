@@ -8,7 +8,7 @@ objs = $(srcs:.c=.o)
 
 philo_src = main.c
 philo_obj = main.o
-philo = philo
+NAME = philo
 
 CC=cc
 CFLAGS= -Wall -Wextra -Werror
@@ -16,19 +16,19 @@ CFLAGS= -Wall -Wextra -Werror
 %.o : %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-all : philo
+all : $(NAME)
 
 $(philo_obj) : $(philo_src)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-philo : $(objs) $(philo_obj)
+$(NAME) : $(objs) $(philo_obj)
 	$(CC) $(philo_obj) $(objs) -o $@
 
 clean :
-	rm $(objs)
+	rm $(objs) $(philo_obj)
 
 fclean : clean
-	rm $(philo)
+	rm $(NAME)
 
 bonus : 
 	make -C philo_bonus/

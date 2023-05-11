@@ -8,7 +8,7 @@ objs = $(srcs:.c=.o)
 
 philo_srcb = main.c
 philo_objb = main.o
-philo_bonus = philo_bonus
+NAMEB = philo_bonus
 
 CC=cc
 CFLAGS= -Wall -Wextra -Werror
@@ -16,18 +16,18 @@ CFLAGS= -Wall -Wextra -Werror
 %.o : %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-all : philo_bonus
+all : $(NAMEB)
 
 $(philo_objb) : $(philo_srcb)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-philo_bonus : $(objs) $(philo_objb)
+$(NAMEB) : $(objs) $(philo_objb)
 	$(CC) $(philo_objb) $(objs) -o $@
 
 clean :
-	rm $(objs)
+	rm $(objs) $(philo_objb)
 
 fclean : clean
-	rm $(philo_bonus)
+	rm $(NAMEB)
 
 re : fclean all

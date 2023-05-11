@@ -6,7 +6,7 @@
 /*   By: ael-mhar <ael-mhar@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 15:15:04 by ael-mhar          #+#    #+#             */
-/*   Updated: 2023/03/24 19:43:01 by ael-mhar         ###   ########.fr       */
+/*   Updated: 2023/03/24 22:42:31 by ael-mhar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,17 @@ unsigned long long	get_time(t_solve *solve)
 	return (res);
 }
 
-void	ft_usleep(t_solve *solve, long ms)
+void	ft_usleep(t_solve *solve, int ms)
 {
 	unsigned long	start;
 
 	start = get_time(solve);
-	while (get_time(solve) - start < (unsigned long long)ms)
-		usleep(ms / 10);
+	while (1)
+	{
+		if (get_time(solve) - start >= (unsigned long long) ms)
+			break ;
+		usleep(200);
+	}
 }
 
 void	philo_sleep(t_solve *solve, int philo_id)
@@ -42,7 +46,7 @@ void	philo_sleep(t_solve *solve, int philo_id)
 		printf("%llu %d is sleeping\n", get_time(solve) - solve->timestamp,
 			philo_id);
 		pthread_mutex_unlock(&solve->lock);
-		usleep(solve->time_to_sleep * 1000);
+		ft_usleep(solve, solve->time_to_sleep);
 		return ;
 	}
 	pthread_mutex_unlock(&solve->lock);
@@ -60,7 +64,7 @@ void	eat(t_solve *solve, int philo_id)
 		solve->philosophers[philo_id].is_ates = 1;
 		solve->philosophers[philo_id].meals_ates++;
 		pthread_mutex_unlock(&solve->lock);
-		usleep(solve->time_to_eat * 1000);
+		ft_usleep(solve, solve->time_to_eat);
 		return ;
 	}
 	pthread_mutex_unlock(&solve->lock);
